@@ -1,16 +1,14 @@
 using UnityEngine;
 using System.Collections;
 
-[ExecuteInEditMode]
 [AddComponentMenu("Sprites/Sprite")]
 [RequireComponent (typeof(MeshFilter))]
 [RequireComponent (typeof(MeshRenderer))]
 public class Sprite : MonoBehaviour 
 {
-    public Vector2 size = Vector2.one;
-    public Vector2 zero = Vector2.one / 2;
-    public Rect textureCoords = Rect.MinMaxRect(0, 0, 1, 1);
-    private bool pixelCorrect = true;
+    public Vector2 Size = Vector2.one;
+    public Vector2 Zero = Vector2.one / 2;
+    public Rect TextureCoords = Rect.MinMaxRect(0, 0, 1, 1);
     
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
@@ -33,17 +31,17 @@ public class Sprite : MonoBehaviour
     private void InitializeMesh()
     {
         Camera cam = Camera.main;
-        meshFilter.mesh = CreateMesh(size, zero, textureCoords);
+        meshFilter.mesh = CreateMesh(Size, Zero, TextureCoords);
     }
     
     private static Mesh CreateMesh(Vector2 size, Vector2 zero, Rect textureCoords)
     {
         var vertices = new[]
                            {
-                             new Vector3(0, 0, 0),          // 1 ___  2
-                             new Vector3(0, size.y, 0),     //   |  |
-                             new Vector3(size.x, size.y, 0),//   |  |
-                             new Vector3(size.x, 0, 0)      // 0 ---- 3
+                             new Vector3(0, 0, 0),   
+                             new Vector3(0, size.y, 0),
+                             new Vector3(size.x, size.y, 0),
+                             new Vector3(size.x, 0, 0)
                            };
     
         Vector3 shift = Vector2.Scale(zero, size);
@@ -68,41 +66,7 @@ public class Sprite : MonoBehaviour
     
         return new Mesh { vertices = vertices, uv = uv, triangles = triangles };
     }    
-    
-    private Rect NonNormalizedTextureCoords
-    {
-        get
-        {
-            Rect coords = textureCoords;
-            Vector2 texSize = TextureSize;
-            if (texSize != Vector2.zero)
-            {
-                coords.xMin *= texSize.x;
-                coords.xMax *= texSize.x;
-                coords.yMin *= texSize.y;
-                coords.yMax *= texSize.y;
-            }
-            return coords;
-        }
-    }
-    
-    private Vector2 TextureSize
-    {
-        get
-        {
-            if (meshRenderer == null)
-                return Vector2.zero;
-            Material mat = meshRenderer.sharedMaterial;
-            if (mat == null)
-                return Vector2.zero;
-            Texture tex = mat.mainTexture;
-            if (tex == null)
-                return Vector2.zero;
-            
-            return new Vector2(tex.width, tex.height);
-        }
-    }
-    
+       
     
     public void SetTexture(Texture2D texture)
     {

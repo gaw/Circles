@@ -40,7 +40,7 @@ public class BallsGenerator : MonoBehaviour {
             md.Size = size;
             
             var sprite = ball.GetComponent(typeof(Sprite)) as Sprite;
-            sprite.size = new Vector2(size, size);
+            sprite.Size = new Vector2(size, size);
             
             var collider = ball.GetComponent(typeof(SphereCollider)) as SphereCollider;
             collider.radius = size / 2;
@@ -49,7 +49,7 @@ public class BallsGenerator : MonoBehaviour {
             scoreOnClick.Score = Singleton.Instance.GetScoreBySize(size);
             
             sprite.SetTexture(Singleton.Instance.TextureManager.Atlas);
-            sprite.textureCoords = Singleton.Instance.TextureManager.GetTextureCoordinats(size);
+            sprite.TextureCoords = Singleton.Instance.TextureManager.GetTextureCoordinats(size);
                         
             ball.position = new Vector3(Random.Range(-width / 2 + size, width / 2 - size), y + size, 0);
         }        

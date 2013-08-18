@@ -12,11 +12,14 @@ public class TextureManager
         var texture = new Texture2D(256, 256, TextureFormat.ARGB32, false);
         texture.filterMode = FilterMode.Point;     
         
+        var mainColor = new Color(0.5F, 0.4F, 0.3F);
+        mainColor = AddNoise(mainColor, 0.3F);
+        
         var textures = new List<Texture2D>();
         for(var i = 0; i < 4; i++)
-            textures.Add(GenerateTexture(64, new Vector2(0, 0)));
+            textures.Add(GenerateTexture(mainColor, 64, new Vector2(0, 0)));
         for(var i = 0; i < 4; i++)
-            textures.Add(GenerateTexture(32, new Vector2(0, 0)));
+            textures.Add(GenerateTexture(mainColor, 32, new Vector2(0, 0)));
         
         _pieces = texture.PackTextures(textures.ToArray(), 0);                
         
@@ -24,14 +27,15 @@ public class TextureManager
     }
     
     
-    private Texture2D GenerateTexture(int size, Vector2 position)
+    private Texture2D GenerateTexture(Color mainColor, int size, Vector2 position)
     {
         var texture = new Texture2D(size, size, TextureFormat.ARGB32, false);
         
         var center = size / 2;
+                
+        mainColor = AddNoise(mainColor, 0.1F);        
+        mainColor = AddBrightness(mainColor, Random.value * 0.2F - 0.1F);
         
-        var mainColor = new Color(0.5F, 0.4F, 0.3F);
-        mainColor = AddNoise(mainColor, 0.2F);        
         var transparentColor = new Color(1.0F, 1.0F, 1.0F, 0.0F);
 
         for(var i = 0; i < size; i++)
