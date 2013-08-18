@@ -9,7 +9,7 @@ public class Sprite : MonoBehaviour
 {
     public Vector2 size = Vector2.one;
     public Vector2 zero = Vector2.one / 2;
-    private Rect textureCoords = Rect.MinMaxRect(0, 0, 1, 1);
+    public Rect textureCoords = Rect.MinMaxRect(0, 0, 1, 1);
     private bool pixelCorrect = true;
     
     private MeshFilter meshFilter;
@@ -101,5 +101,11 @@ public class Sprite : MonoBehaviour
             
             return new Vector2(tex.width, tex.height);
         }
+    }
+    
+    
+    public void SetTexture(Texture2D texture)
+    {
+        renderer.material.mainTexture = texture;
     }
 }

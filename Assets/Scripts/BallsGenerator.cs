@@ -1,18 +1,29 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class BallsGenerator : MonoBehaviour {
     public Transform Prefab;
     public float Interval;
     private float _elapsedSeconds = 0;
+    
+    private List<GameObject> _balls = new List<GameObject>();
         
-    // Use this for initialization
 	void Start () {
-	
+	    Singleton.Instance.StartTime();
+        Singleton.Instance.UpdateScore();        
+        Singleton.Instance.UpdateLevel();
 	}
 	
-	// Update is called once per frame
 	void Update () {
+        Singleton.Instance.UpdateTime();
+        
+        _balls.RemoveAll(a => a == null);
+        
+        if(!CanGenerate()) return;
+        
+        if(Singleton.Instance.Score / 500 + 1 > Singleton.Instance.Level) NextLevel();
+        
 	    _elapsedSeconds += Time.deltaTime;
         while(_elapsedSeconds > Interval)
         {
@@ -20,18 +31,48 @@ public class BallsGenerator : MonoBehaviour {
             
             var width = Singleton.Instance.ScreenWidth;
             var y = Singleton.Instance.Top;
-            var ballType = Singleton.Instance.GetRandomBallType();
+            var size = Random.Range(32, 129);
             
             var ball = Instantiate (Prefab) as Transform;                        
-            var tm = ball.GetComponent(typeof(TextureMaker)) as TextureMaker;
-            tm.TextureSize = ballType.Size;
-            var md = ball.GetComponent(typeof(MovingDown)) as MovingDown;
-            md.BallType = ballType;
-            var sprite = ball.GetComponent(typeof(Sprite)) as Sprite;
-            sprite.size = new Vector2(ballType.Size, ballType.Size);
+            _balls.Add(ball.gameObject);            
             
-            //ball.localScale = new Vector3(ballType.Size, ballType.Size, 1);
-            ball.position = new Vector3(Random.value * width - width / 2, y + ballType.Size, 0);
+            var md = ball.GetComponent(typeof(MovingDown)) as MovingDown;
+            md.Size = size;
+            
+            var sprite = ball.GetComponent(typeof(Sprite)) as Sprite;
+            sprite.size = new Vector2(size, size);
+            
+            var collider = ball.GetComponent(typeof(SphereCollider)) as SphereCollider;
+            collider.radius = size / 2;
+            
+            var scoreOnClick = ball.GetComponent(typeof(ScoreOnClick)) as ScoreOnClick;
+            scoreOnClick.Score = Singleton.Instance.GetScoreBySize(size);
+            
+            sprite.SetTexture(Singleton.Instance.TextureManager.Atlas);
+            sprite.textureCoords = Singleton.Instance.TextureManager.GetTextureCoordinats(size);
+                        
+            ball.position = new Vector3(Random.Range(-width / 2 + size, width / 2 - size), y + size, 0);
         }        
 	}
+    
+    
+    private bool _canGenerate = true;
+    
+    void NextLevel()
+    {
+        _canGenerate = false;
+        Interval *= 0.8F;
+    }
+    
+    
+    private bool CanGenerate()
+    {
+        if(_canGenerate) return true;
+        
+        if(_balls.Count > 0) return false;
+        
+        Singleton.Instance.NextLevel();
+        _canGenerate = true;
+        return true;
+    }    
 }

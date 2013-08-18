@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class Singleton
 {
@@ -7,13 +8,12 @@ public class Singleton
     
     public Singleton()
     {
-        _ballTypes = new BallType[]
-            {
-                new BallType { Size = 128, Speed = 100, Score = 1 },
-                new BallType { Size = 64, Speed = 150, Score = 2 },
-                new BallType { Size = 32, Speed = 200, Score = 5 },
-                new BallType { Size = 16, Speed = 300, Score = 10 }
-            };
+        _textureManager = new TextureManager();
+        _textureManager.GenerateTexturePack();
+        
+        _guiTextScore = GameObject.Find("GuiScore").GetComponent(typeof(GUIText)) as GUIText;
+        _guiTextTime = GameObject.Find("GuiTime").GetComponent(typeof(GUIText)) as GUIText;
+        _guiTextLevel = GameObject.Find("GuiLevel").GetComponent(typeof(GUIText)) as GUIText;
     }    
     
     public float ScreenWidth;
@@ -22,18 +22,85 @@ public class Singleton
     public float Bottom { get { return -ScreenHeight / 2; } }
     public float Top { get { return ScreenHeight / 2; } }
     
-    private BallType[] _ballTypes;
-    public BallType GetRandomBallType()
+    private TextureManager _textureManager;
+    public TextureManager TextureManager
     {
-        Debug.Log(Random.Range(0, 1));
-        return _ballTypes[Random.Range(0, _ballTypes.Length)];
+        get { return _textureManager; }
     }
-}
-
-
-public class BallType
-{
-    public int Size;
-    public int Speed;
-    public int Score;
+    
+    
+    #region Score
+    
+    private GUIText _guiTextScore;
+    public int Score { get; private set; }
+    
+    public void AddScore(int score)
+    {
+        Score += score;
+        UpdateScore();
+    }
+    
+    public void UpdateScore()
+    {
+        _guiTextScore.text = string.Format("Score: {0}", Score);        
+    }
+    
+    #endregion
+    
+    
+    #region Time
+    
+    private GUIText _guiTextTime;
+    private System.DateTime _startTime;
+    public int SecondsElapsed = int.MinValue;
+    
+    public void StartTime()
+    {
+        _startTime = System.DateTime.Now;
+        UpdateTime();
+    }
+    
+    public void UpdateTime()
+    {
+        var seconds = (int)((DateTime.Now - _startTime).TotalSeconds);
+        if(seconds != SecondsElapsed)
+        {
+            SecondsElapsed = seconds;
+            _guiTextTime.text = string.Format("Time: {0}", SecondsElapsed);
+        }
+    }
+    
+    #endregion
+    
+    
+    #region Level
+    
+    private GUIText _guiTextLevel;
+    public int Level = 1;
+    
+    public void NextLevel()
+    {
+        Level++;        
+        UpdateLevel();
+        _textureManager.GenerateTexturePack();
+    }    
+    
+    public void UpdateLevel()
+    {
+        _guiTextLevel.text = string.Format("Level: {0}", Level);
+    }
+    
+    #endregion
+    
+    
+    public float GetSpeedBySize(float size)
+    {
+        return (200 - size) * 2 + 30 * Level;
+    }
+    
+    
+    public int GetScoreBySize(float size)
+    {
+        return (150 - (int)size) * 2;
+    }
 }
