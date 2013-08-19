@@ -6,6 +6,7 @@ public class BallsGenerator : MonoBehaviour {
     public Transform Prefab;
     public float Interval;
     private float _elapsedSeconds = 0;
+    public Material Material;
     
     private List<GameObject> _balls = new List<GameObject>();
         
@@ -48,8 +49,8 @@ public class BallsGenerator : MonoBehaviour {
             var scoreOnClick = ball.GetComponent(typeof(ScoreOnClick)) as ScoreOnClick;
             scoreOnClick.Score = Singleton.Instance.GetScoreBySize(size);
             
-            sprite.SetTexture(Singleton.Instance.TextureManager.Atlas);
             sprite.TextureCoords = Singleton.Instance.TextureManager.GetTextureCoordinats(size);
+            sprite.SetTexture(Singleton.Instance.TextureManager.Atlas);
                         
             ball.position = new Vector3(Random.Range(-width / 2 + size, width / 2 - size), y + size, 0);
         }        

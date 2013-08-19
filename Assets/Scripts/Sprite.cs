@@ -68,8 +68,19 @@ public class Sprite : MonoBehaviour
     }    
        
     
+    private Material _material;
+    
     public void SetTexture(Texture2D texture)
     {
-        renderer.material.mainTexture = texture;
+        if(_material == null) 
+        {
+            var bg = FindObjectOfType(typeof(BallsGenerator)) as BallsGenerator;
+                        
+            _material = bg.Material;
+            _material.mainTexture = texture;
+        }
+        
+        renderer.material = _material;
+        //renderer.material.mainTexture = ;
     }
 }
