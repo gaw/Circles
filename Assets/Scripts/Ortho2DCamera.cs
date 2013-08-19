@@ -4,33 +4,28 @@ using System.Collections;
 [ExecuteInEditMode]
 [RequireComponent(typeof(Camera))] 
 public class Ortho2DCamera : MonoBehaviour {
-  [SerializeField] private bool uniform = true;
-  [SerializeField] private bool autoSetUniform = false;
- 
-    
-  private void Awake()
-  {
-    camera.orthographic = true;
-
-    if (uniform)
-      SetUniform();
-  } 
+    private void Awake()
+    {
+        camera.orthographic = true;
+        SetUniform();
+    } 
     
     
-  private void LateUpdate()
-  {
-    if(Singleton.Instance.ScreenWidth != camera.pixelWidth) Singleton.Instance.ScreenWidth = camera.pixelWidth;
-    if(Singleton.Instance.ScreenHeight != camera.pixelHeight) Singleton.Instance.ScreenHeight = camera.pixelHeight;
+    private void LateUpdate()
+    {
+        // Соохранение текущих размеров камеры в синглтоне
+        if(Singleton.Instance.ScreenWidth != camera.pixelWidth) Singleton.Instance.ScreenWidth = camera.pixelWidth;
+        if(Singleton.Instance.ScreenHeight != camera.pixelHeight) Singleton.Instance.ScreenHeight = camera.pixelHeight;
         
-    if (autoSetUniform && uniform)
-      SetUniform();
-  } 
+        SetUniform();
+    } 
     
     
-  private void SetUniform()
-  {
-    float orthographicSize = camera.pixelHeight/2;
-	if (orthographicSize != camera.orthographicSize)
-      camera.orthographicSize = orthographicSize;
-  }
+    // Установка размера камеры для соответствия 1:1 единицы пространства к экранному пикселю
+    private void SetUniform()
+    {
+        float orthographicSize = camera.pixelHeight/2;
+    	if (orthographicSize != camera.orthographicSize)
+            camera.orthographicSize = orthographicSize;
+    }
 }

@@ -1,18 +1,16 @@
 using UnityEngine;
 using System.Collections;
 
+// Движение спрайта вниз
 public class MovingDown : MonoBehaviour {
-    public float Size;
+    public float Size; // Размер спрайта
     
-	// Use this for initialization
-	void Start () {
-	}
-	
-	// Update is called once per frame
 	void Update () {
-        var delta = Time.deltaTime * Singleton.Instance.GetSpeedBySize(Size);
+        // Движение вниз в зависимости от размера спрайта
+        var delta = Time.deltaTime * Singleton.Instance.GetSpeedBySize(Size);        
         transform.position = new Vector3(transform.position.x, transform.position.y - delta, transform.position.z);
         
+        // При уходе за нижнюю границу уничтожение спрайта        
         if(transform.position.y < Singleton.Instance.Bottom - Size) Destroy(gameObject);
 	}
 }

@@ -2,12 +2,14 @@ using UnityEngine;
 using System.Collections;
 using System;
 
+// Общие данные
 public class Singleton
 {
     public static readonly Singleton Instance = new Singleton();
     
     public Singleton()
     {
+        // Инициализация текстурного менеджера и генерация первого пака текстур
         _textureManager = new TextureManager();
         _textureManager.GenerateTexturePack();
         
@@ -34,6 +36,7 @@ public class Singleton
     private GUIText _guiTextScore;
     public int Score { get; private set; }
     
+    // Умеличение количества очков
     public void AddScore(int score)
     {
         Score += score;
@@ -54,6 +57,7 @@ public class Singleton
     private System.DateTime _startTime;
     public int SecondsElapsed = int.MinValue;
     
+    // Инициализация счётчика времени
     public void StartTime()
     {
         _startTime = System.DateTime.Now;
@@ -78,6 +82,7 @@ public class Singleton
     private GUIText _guiTextLevel;
     public int Level = 1;
     
+    // Переход на следующий уровень
     public void NextLevel()
     {
         Level++;        
@@ -92,13 +97,14 @@ public class Singleton
     
     #endregion
     
-    
+    // Получение скорости шарика по его размеру
     public float GetSpeedBySize(float size)
     {
         return (200 - size) * 2 + 30 * Level;
     }
     
     
+    // Получение количества очков за шарик по его размеру
     public int GetScoreBySize(float size)
     {
         return (150 - (int)size) * 2;

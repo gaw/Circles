@@ -1,20 +1,17 @@
 using UnityEngine;
 using System.Collections;
-
-[AddComponentMenu("Sprites/Sprite")]
+// Создание прямоугольного меша
 [RequireComponent (typeof(MeshFilter))]
 [RequireComponent (typeof(MeshRenderer))]
 public class Sprite : MonoBehaviour 
 {
-    public Vector2 Size = Vector2.one;
-    public Vector2 Zero = Vector2.one / 2;
-    public Rect TextureCoords = Rect.MinMaxRect(0, 0, 1, 1);
+    public Vector2 Size = Vector2.one;                        // Размер меша
+    public Vector2 Zero = Vector2.one / 2;                    // Центр меша
+    public Rect TextureCoords = Rect.MinMaxRect(0, 0, 1, 1);  // Текстурные координаты
     
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
 
-    #region Unity messages
-    
     private void Awake()
     {
         meshFilter = GetComponent<MeshFilter>();
@@ -26,14 +23,14 @@ public class Sprite : MonoBehaviour
         InitializeMesh();
     }
     
-    #endregion
-    
     private void InitializeMesh()
     {
         Camera cam = Camera.main;
         meshFilter.mesh = CreateMesh(Size, Zero, TextureCoords);
     }
     
+    
+    // Создание меша заданного размера, с заданным центром и заданными текстурными координатами
     private static Mesh CreateMesh(Vector2 size, Vector2 zero, Rect textureCoords)
     {
         var vertices = new[]
@@ -68,19 +65,9 @@ public class Sprite : MonoBehaviour
     }    
        
     
-    private Material _material;
-    
-    public void SetTexture(Texture2D texture)
+    // Установка материала меша
+    public void SetMaterial(Material material)
     {
-        if(_material == null) 
-        {
-            var bg = FindObjectOfType(typeof(BallsGenerator)) as BallsGenerator;
-                        
-            _material = bg.Material;
-            _material.mainTexture = texture;
-        }
-        
-        renderer.material = _material;
-        //renderer.material.mainTexture = ;
+        renderer.material = material;
     }
 }
