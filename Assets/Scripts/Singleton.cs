@@ -13,9 +13,14 @@ public class Singleton
         _textureManager = new TextureManager();
         _textureManager.GenerateTexturePack();
         
-        _guiTextScore = GameObject.Find("GuiScore").GetComponent(typeof(GUIText)) as GUIText;
-        _guiTextTime = GameObject.Find("GuiTime").GetComponent(typeof(GUIText)) as GUIText;
-        _guiTextLevel = GameObject.Find("GuiLevel").GetComponent(typeof(GUIText)) as GUIText;
+        GuiTextScore = GameObject.Find("GuiScore").GetComponent(typeof(GUIText)) as GUIText;
+        GuiTextTime = GameObject.Find("GuiTime").GetComponent(typeof(GUIText)) as GUIText;
+        GuiTextLevel = GameObject.Find("GuiLevel").GetComponent(typeof(GUIText)) as GUIText;
+        GuiTextMessage = GameObject.Find("GuiMessage").GetComponent(typeof(GUIText)) as GUIText;
+        
+        GuiTextLevel.enabled = false;
+        GuiTextScore.enabled = false;
+        GuiTextTime.enabled = false;
     }    
     
     public float ScreenWidth;
@@ -31,9 +36,12 @@ public class Singleton
     }
     
     
+    public GUIText GuiTextMessage;
+    
+    
     #region Score
     
-    private GUIText _guiTextScore;
+    public GUIText GuiTextScore;
     public int Score { get; private set; }
     
     // Умеличение количества очков
@@ -45,7 +53,7 @@ public class Singleton
     
     public void UpdateScore()
     {
-        _guiTextScore.text = string.Format("Score: {0}", Score);        
+        GuiTextScore.text = string.Format("Score: {0}", Score);        
     }
     
     #endregion
@@ -53,7 +61,7 @@ public class Singleton
     
     #region Time
     
-    private GUIText _guiTextTime;
+    public GUIText GuiTextTime;
     private System.DateTime _startTime;
     public int SecondsElapsed = int.MinValue;
     
@@ -70,7 +78,7 @@ public class Singleton
         if(seconds != SecondsElapsed)
         {
             SecondsElapsed = seconds;
-            _guiTextTime.text = string.Format("Time: {0}", SecondsElapsed);
+            GuiTextTime.text = string.Format("Time: {0}", SecondsElapsed);
         }
     }
     
@@ -79,7 +87,7 @@ public class Singleton
     
     #region Level
     
-    private GUIText _guiTextLevel;
+    public GUIText GuiTextLevel;
     public int Level = 1;
     
     // Переход на следующий уровень
@@ -92,7 +100,7 @@ public class Singleton
     
     public void UpdateLevel()
     {
-        _guiTextLevel.text = string.Format("Level: {0}", Level);
+        GuiTextLevel.text = string.Format("Level: {0}", Level);
     }
     
     #endregion

@@ -13,13 +13,9 @@ public class BallsGenerator : MonoBehaviour {
 	void Start () 
     {
         // Загрузка бандла
-        string path = string.Format("file://{0}/Ball.unity3d", Application.streamingAssetsPath);
+        //string path = string.Format("file://{0}/Ball.unity3d", Application.streamingAssetsPath);
+        var path = "https://dl.dropboxusercontent.com/u/2252362/Ball.unity3d";
         StartCoroutine(DownloadAndCache(path, 1));
-        
-        // Инициализация времени. Отображение текущих очков, текущего уровня.
-	    Singleton.Instance.StartTime();
-        Singleton.Instance.UpdateScore();        
-        Singleton.Instance.UpdateLevel();
 	}
     
     
@@ -34,6 +30,8 @@ public class BallsGenerator : MonoBehaviour {
             yield return loader;
             if (loader.error != null)
             {
+                Debug.Log(loader.error);
+                Singleton.Instance.GuiTextMessage.text = loader.error;
                 return false;
             }
             
@@ -44,10 +42,32 @@ public class BallsGenerator : MonoBehaviour {
             
             bundle.Unload(false);
         }
+        
+        OnLoad();        
+    }
+    
+    
+    private bool _isLoaded = false;
+    private void OnLoad()
+    {
+        Singleton.Instance.GuiTextScore.enabled = true;
+        Singleton.Instance.GuiTextTime.enabled = true;
+        Singleton.Instance.GuiTextLevel.enabled = true;
+        Singleton.Instance.GuiTextMessage.enabled = false;
+        
+        // Инициализация времени. Отображение текущих очков, текущего уровня.
+        Singleton.Instance.StartTime();
+        Singleton.Instance.UpdateScore();        
+        Singleton.Instance.UpdateLevel();
+        
+        _isLoaded = true;
     }
     
     
 	void Update () {
+        // Если бандл ещё не загружен, выход
+        if(!_isLoaded) return;
+        
         // Обновление текущего времени
         Singleton.Instance.UpdateTime();
         
